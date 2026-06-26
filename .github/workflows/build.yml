@@ -1,0 +1,78 @@
+name: build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - yangchen
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: temurin
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platforms;android-34 build-tools;34.0.0'
+
+      - name: Grant gradlew execute permission
+        run: chmod +x gradlew
+
+      - name: Assemble all library modules
+        run: |
+          for module in \
+            lib-common \
+            lib-container \
+            lib-database \
+            lib-datasource \
+            lib-decoder \
+            lib-decoder-av1 \
+            lib-decoder-ffmpeg \
+            lib-decoder-flac \
+            lib-decoder-iamf \
+            lib-decoder-midi \
+            lib-decoder-mpegh \
+            lib-decoder-mpv \
+            lib-decoder-opus \
+            lib-decoder-vp9 \
+            lib-exoplayer \
+            lib-exoplayer-dash \
+            lib-exoplayer-hls \
+            lib-exoplayer-rtsp \
+            lib-exoplayer-smoothstreaming \
+            lib-exoplayer-workmanager \
+            lib-extractor \
+            lib-inspector \
+            lib-inspector-frame \
+            lib-muxer \
+            lib-session \
+            lib-transformer \
+            lib-ui \
+            lib-cast \
+            lib-effect \
+            lib-effect-lottie \
+            lib-datasource-cronet \
+            lib-datasource-okhttp \
+            lib-datasource-rtmp \
+            lib-common-ktx
+          do
+            ./gradlew :$module:assembleRelease --no-daemon || true
+          done
+
+      - name: Collect AAR files
+        run: |
+          mkdir -p aars
+          find libraries -name "*.aar" -exec cp {} aars/ \;
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: media3-aars
+          path: aars/
+          if-no-files-found: warn
