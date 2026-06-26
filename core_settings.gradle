@@ -91,6 +91,8 @@ include modulePrefix + 'lib-decoder-opus'
 project(modulePrefix + 'lib-decoder-opus').projectDir = new File(rootDir, 'libraries/decoder_opus')
 include modulePrefix + 'lib-decoder-vp9'
 project(modulePrefix + 'lib-decoder-vp9').projectDir = new File(rootDir, 'libraries/decoder_vp9')
+include modulePrefix + 'lib-decoder-mpv'
+project(modulePrefix + 'lib-decoder-mpv').projectDir = new File(rootDir, 'libraries/decoder_mpv')
 
 include modulePrefix + 'lib-extractor'
 project(modulePrefix + 'lib-extractor').projectDir = new File(rootDir, 'libraries/extractor')

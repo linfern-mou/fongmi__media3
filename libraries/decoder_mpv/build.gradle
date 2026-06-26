@@ -1,0 +1,14 @@
+plugins {
+    id 'com.android.library'
+}
+
+apply from: "$gradle.ext.androidxMediaSettingsDir/common_config.gradle"
+
+android {
+    namespace 'androidx.media3.mpvplayer'
+}
+
+dependencies {
+    api project(modulePrefix + 'lib-common')
+    implementation project(modulePrefix + 'lib-exoplayer')
+}
