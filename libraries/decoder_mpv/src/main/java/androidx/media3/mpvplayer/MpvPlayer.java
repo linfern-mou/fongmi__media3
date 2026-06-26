@@ -581,8 +581,21 @@ public final class MpvPlayer extends BasePlayer {
         Timeline.Window[] windows = new Timeline.Window[items.size()];
         for (int i = 0; i < items.size(); i++) {
             windows[i] = new Timeline.Window();
-            windows[i].set(i, C.TIME_UNSET, C.TIME_UNSET, 0, false, true,
-                    false, false, C.TIME_UNSET, MediaItem.EMPTY, null);
+            windows[i].set(
+                    i,
+                    items.get(i),
+                    null,
+                    C.TIME_UNSET,
+                    C.TIME_UNSET,
+                    C.TIME_UNSET,
+                    true,
+                    false,
+                    null,
+                    C.TIME_UNSET,
+                    C.TIME_UNSET,
+                    i,
+                    i,
+                    0);
         }
         return new PlaylistTimeline(windows);
     }
@@ -596,6 +609,11 @@ public final class MpvPlayer extends BasePlayer {
 
         @Override
         public int getWindowCount() {
+            return windows.length;
+        }
+
+        @Override
+        public int getPeriodCount() {
             return windows.length;
         }
 

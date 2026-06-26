@@ -11,4 +11,5 @@ android {
 dependencies {
     api project(modulePrefix + 'lib-common')
     implementation project(modulePrefix + 'lib-exoplayer')
+    implementation 'androidx.annotation:annotation:1.7.1'
 }
