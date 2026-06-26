@@ -641,7 +641,21 @@ public final class MpvPlayer extends BasePlayer {
         @Override
         public Timeline.Window getWindow(int windowIndex, Timeline.Window window,
                 long defaultPositionProjectionUs) {
-            window.set(windows[windowIndex]);
+            Timeline.Window src = windows[windowIndex];
+            window.uid = src.uid;
+            window.mediaItem = src.mediaItem;
+            window.manifest = src.manifest;
+            window.presentationStartTimeMs = src.presentationStartTimeMs;
+            window.windowStartTimeMs = src.windowStartTimeMs;
+            window.elapsedRealtimeEpochOffsetMs = src.elapsedRealtimeEpochOffsetMs;
+            window.isSeekable = src.isSeekable;
+            window.isDynamic = src.isDynamic;
+            window.liveConfiguration = src.liveConfiguration;
+            window.defaultPositionUs = src.defaultPositionUs;
+            window.durationUs = src.durationUs;
+            window.firstPeriodIndex = src.firstPeriodIndex;
+            window.lastPeriodIndex = src.lastPeriodIndex;
+            window.positionInFirstPeriodUs = src.positionInFirstPeriodUs;
             return window;
         }
 
