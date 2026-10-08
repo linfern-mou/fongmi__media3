@@ -1502,6 +1502,14 @@ public class PlayerView extends FrameLayout implements AdViewProvider {
     return debugView != null && debugView.isVisible();
   }
 
+  /** Hides the debug overlay view if it is visible. */
+  @UnstableApi
+  public void hideDebugView() {
+    if (debugView != null) {
+      debugView.hide();
+    }
+  }
+
   /** Toggles the playback debug view. */
   @UnstableApi
   public void toggleDebugView() {

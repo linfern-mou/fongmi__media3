@@ -88,6 +88,7 @@ public final class MediaItem {
     // are removed.
     private LiveConfiguration.Builder liveConfiguration;
     private RequestMetadata requestMetadata;
+    private int decode;
     private boolean adblock;
 
     /** Creates a builder. */
@@ -111,6 +112,7 @@ public final class MediaItem {
       mediaMetadata = mediaItem.mediaMetadata;
       liveConfiguration = mediaItem.liveConfiguration.buildUpon();
       requestMetadata = mediaItem.requestMetadata;
+      decode = mediaItem.decode;
       adblock = mediaItem.adblock;
       @Nullable LocalConfiguration localConfiguration = mediaItem.localConfiguration;
       if (localConfiguration != null) {
@@ -593,6 +595,12 @@ public final class MediaItem {
     }
 
     @CanIgnoreReturnValue
+    public Builder setDecode(int decode) {
+      this.decode = decode;
+      return this;
+    }
+
+    @CanIgnoreReturnValue
     public Builder setAdblock(boolean adblock) {
       this.adblock = adblock;
       return this;
@@ -639,6 +647,7 @@ public final class MediaItem {
           liveConfiguration.build(),
           mediaMetadata != null ? mediaMetadata : MediaMetadata.EMPTY,
           requestMetadata,
+          decode,
           adblock);
     }
   }
@@ -2343,6 +2352,8 @@ public final class MediaItem {
   /** The media {@link RequestMetadata}. */
   public final RequestMetadata requestMetadata;
 
+  public final int decode;
+
   public final boolean adblock;
 
   // Using ClippingProperties until they're deleted.
@@ -2354,6 +2365,7 @@ public final class MediaItem {
       LiveConfiguration liveConfiguration,
       MediaMetadata mediaMetadata,
       RequestMetadata requestMetadata,
+      int decode,
       boolean adblock) {
     this.mediaId = mediaId;
     this.localConfiguration = localConfiguration;
@@ -2363,6 +2375,7 @@ public final class MediaItem {
     this.clippingConfiguration = clippingConfiguration;
     this.clippingProperties = clippingConfiguration;
     this.requestMetadata = requestMetadata;
+    this.decode = decode;
     this.adblock = adblock;
   }
 
@@ -2388,6 +2401,7 @@ public final class MediaItem {
         && Objects.equals(liveConfiguration, other.liveConfiguration)
         && Objects.equals(mediaMetadata, other.mediaMetadata)
         && Objects.equals(requestMetadata, other.requestMetadata)
+        && decode == other.decode
         && adblock == other.adblock;
   }
 
@@ -2399,6 +2413,7 @@ public final class MediaItem {
     result = 31 * result + clippingConfiguration.hashCode();
     result = 31 * result + mediaMetadata.hashCode();
     result = 31 * result + requestMetadata.hashCode();
+    result = 31 * result + decode;
     result = 31 * result + (adblock ? 1 : 0);
     return result;
   }
@@ -2409,6 +2424,7 @@ public final class MediaItem {
   private static final String FIELD_CLIPPING_PROPERTIES = Util.intToStringMaxRadix(3);
   private static final String FIELD_REQUEST_METADATA = Util.intToStringMaxRadix(4);
   private static final String FIELD_LOCAL_CONFIGURATION = Util.intToStringMaxRadix(5);
+  private static final String FIELD_DECODE = Util.intToStringMaxRadix(6);
   private static final String FIELD_ADBLOCK = Util.intToStringMaxRadix(7);
 
   @UnstableApi
@@ -2432,6 +2448,7 @@ public final class MediaItem {
     if (includeLocalConfiguration && localConfiguration != null) {
       bundle.putBundle(FIELD_LOCAL_CONFIGURATION, localConfiguration.toBundle());
     }
+    bundle.putInt(FIELD_DECODE, decode);
     bundle.putBoolean(FIELD_ADBLOCK, adblock);
     return bundle;
   }
@@ -2535,6 +2552,7 @@ public final class MediaItem {
       localConfiguration = LocalConfiguration.fromBundle(localConfigurationBundle);
     }
 
+    int decode = bundle.getInt(FIELD_DECODE, 1);
     boolean adblock = bundle.getBoolean(FIELD_ADBLOCK, false);
 
     return new MediaItem(
@@ -2544,6 +2562,7 @@ public final class MediaItem {
         liveConfiguration,
         mediaMetadata,
         requestMetadata,
+        decode,
         adblock);
   }
 }

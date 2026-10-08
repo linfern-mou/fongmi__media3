@@ -756,6 +756,7 @@ public class SimpleExoPlayer extends BasePlayer implements ExoPlayer, ExoPlayerD
     return player.getAudioFormat();
   }
 
+
   @Override
   public @AudioProcessingSupport int getAudioProcessingSupport() {
     blockUntilConstructorFinished();

@@ -52,7 +52,8 @@ public final class DefaultTsPayloadReaderFactory implements TsPayloadReader.Fact
         FLAG_IGNORE_AAC_STREAM,
         FLAG_IGNORE_H264_STREAM,
         FLAG_IGNORE_SPLICE_INFO_STREAM,
-        FLAG_OVERRIDE_CAPTION_DESCRIPTORS
+        FLAG_OVERRIDE_CAPTION_DESCRIPTORS,
+        FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS
       })
   public @interface Flags {}
 
@@ -83,6 +84,13 @@ public final class DefaultTsPayloadReaderFactory implements TsPayloadReader.Fact
    * closedCaptionFormats} will be ignored if the PMT contains closed captions service descriptors.
    */
   public static final int FLAG_OVERRIDE_CAPTION_DESCRIPTORS = 1 << 5;
+
+  /**
+   * Whether HDMV DTS audio streams will be handled. Set for API compatibility with earlier
+   * fork versions; HDMV DTS streams are now detected automatically by a probe reader, so this
+   * flag does not change behavior.
+   */
+  public static final int FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS = 1 << 6;
 
   private static final int DESCRIPTOR_TAG_CAPTION_SERVICE = 0x86;
   private final @Flags int flags;

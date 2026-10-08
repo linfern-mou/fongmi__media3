@@ -397,6 +397,36 @@ public final class SubtitleView extends FrameLayout {
     updateOutput();
   }
 
+  public float getTextSize() {
+    return defaultTextSize;
+  }
+
+  public void addTextSize(float value) {
+    defaultTextSize += value;
+    defaultTextSizeType = Cue.TEXT_SIZE_TYPE_FRACTIONAL;
+    updateOutput();
+  }
+
+  public void subTextSize(float value) {
+    defaultTextSize -= value;
+    defaultTextSizeType = Cue.TEXT_SIZE_TYPE_FRACTIONAL;
+    updateOutput();
+  }
+
+  public float getPosition() {
+    return bottomPosition;
+  }
+
+  public void addPosition(float value) {
+    bottomPosition += value;
+    updateOutput();
+  }
+
+  public void subPosition(float value) {
+    bottomPosition -= value;
+    updateOutput();
+  }
+
   public void setBottomPosition(float bottomPosition) {
     this.bottomPosition = bottomPosition;
     updateOutput();

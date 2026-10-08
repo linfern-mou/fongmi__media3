@@ -131,6 +131,9 @@ public class DefaultRenderersFactory implements RenderersFactory {
   private boolean enableMediaCodecBufferDecodeOnlyFlag;
   private boolean enableMediaCodecVideoRendererDurationToProgressUs;
   private @DolbyVisionOutputPolicy.Mode int dolbyVisionOutputPolicy;
+  private boolean ffmpegAudioPrefer;
+  private boolean ffmpegVideoPrefer;
+  private boolean enableDv7HevcFallback;
 
   /**
    * @param context A {@link Context}.
@@ -145,6 +148,53 @@ public class DefaultRenderersFactory implements RenderersFactory {
     lateThresholdToDropDecoderInputUs = DEFAULT_LATE_THRESHOLD_TO_DROP_DECODER_INPUT_US;
     videoRendererEarlySchedulingThresholdUs = DEFAULT_EARLY_SCHEDULING_THRESHOLD_US;
     dolbyVisionOutputPolicy = DolbyVisionOutputPolicy.AUTO;
+  }
+
+  /**
+   * Sets whether to prefer the FFmpeg audio renderer over the MediaCodec audio renderer.
+   *
+   * <p>When enabled, the FFmpeg audio renderer (if available) is inserted before the core
+   * MediaCodec audio renderer, so that a track selector preferring the first suitable renderer
+   * will use FFmpeg for audio decoding.
+   *
+   * @param ffmpegAudioPrefer Whether to prefer the FFmpeg audio renderer.
+   * @return This factory, for convenience.
+   */
+  @CanIgnoreReturnValue
+  public final DefaultRenderersFactory setFfmpegAudioPrefer(boolean ffmpegAudioPrefer) {
+    this.ffmpegAudioPrefer = ffmpegAudioPrefer;
+    return this;
+  }
+
+  /**
+   * Sets whether to prefer the FFmpeg video renderer over the MediaCodec video renderer.
+   *
+   * <p>When enabled, the FFmpeg video renderer (if available) is inserted before the core
+   * MediaCodec video renderer, so that a track selector preferring the first suitable renderer
+   * will use FFmpeg for video decoding.
+   *
+   * @param ffmpegVideoPrefer Whether to prefer the FFmpeg video renderer.
+   * @return This factory, for convenience.
+   */
+  @CanIgnoreReturnValue
+  public final DefaultRenderersFactory setFfmpegVideoPrefer(boolean ffmpegVideoPrefer) {
+    this.ffmpegVideoPrefer = ffmpegVideoPrefer;
+    return this;
+  }
+
+  /**
+   * Sets whether to enable Dolby Vision 7 (DV7) HEVC fallback.
+   *
+   * <p>When enabled, playback of Dolby Vision Profile 7 streams will fall back to the underlying
+   * HEVC decoder if the DV7 decoder is unavailable or fails to initialize.
+   *
+   * @param enableDv7HevcFallback Whether to enable DV7 HEVC fallback.
+   * @return This factory, for convenience.
+   */
+  @CanIgnoreReturnValue
+  public final DefaultRenderersFactory setEnableDv7HevcFallback(boolean enableDv7HevcFallback) {
+    this.enableDv7HevcFallback = enableDv7HevcFallback;
+    return this;
   }
 
   /**
@@ -571,11 +621,11 @@ public class DefaultRenderersFactory implements RenderersFactory {
             eventListener,
             allowedVideoJoiningTimeMs));
 
-    if (extensionRendererMode == EXTENSION_RENDERER_MODE_OFF) {
+    if (extensionRendererMode == EXTENSION_RENDERER_MODE_OFF && !ffmpegVideoPrefer) {
       return;
     }
     int extensionRendererIndex = out.size();
-    if (extensionRendererMode == EXTENSION_RENDERER_MODE_PREFER) {
+    if (extensionRendererMode == EXTENSION_RENDERER_MODE_PREFER || ffmpegVideoPrefer) {
       extensionRendererIndex--;
     }
 
@@ -703,11 +753,11 @@ public class DefaultRenderersFactory implements RenderersFactory {
             audioSink);
     out.add(audioRenderer);
 
-    if (extensionRendererMode == EXTENSION_RENDERER_MODE_OFF) {
+    if (extensionRendererMode == EXTENSION_RENDERER_MODE_OFF && !ffmpegAudioPrefer) {
       return;
     }
     int extensionRendererIndex = out.size();
-    if (extensionRendererMode == EXTENSION_RENDERER_MODE_PREFER) {
+    if (extensionRendererMode == EXTENSION_RENDERER_MODE_PREFER || ffmpegAudioPrefer) {
       extensionRendererIndex--;
     }
 
